@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="color-scheme" content="dark">
+    <title>{% block title %}{{ site_name }}{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="ambient ambient-one"></div>
+    <div class="ambient ambient-two"></div>
+
+    <header class="site-header">
+        <a class="brand" href="{{ url_for('home') }}">
+            <span class="brand-mark" aria-hidden="true">
+                <svg viewBox="0 0 24 24">
+                    <path d="M4 5.5A2.5 2.5 0 0 1 6.5 3h11A2.5 2.5 0 0 1 20 5.5v8a2.5 2.5 0 0 1-2.5 2.5H11l-4.7 4.1A.8.8 0 0 1 5 19.5V16.9A2.5 2.5 0 0 1 4 15V5.5Z"/>
+                </svg>
+            </span>
+            <span>{{ site_name }}</span>
+        </a>
+
+        <nav>
+            {% if session.get("is_admin") %}
+                <a href="{{ url_for('admin_dashboard') }}">Dashboard</a>
+                <form action="{{ url_for('admin_logout') }}" method="post" class="inline-form">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                    <button class="nav-button" type="submit">Sign out</button>
+                </form>
+            {% else %}
+                <!-- <a href="{{ url_for('admin_login') }}">Admin</a> -->
+            {% endif %}
+        </nav>
+    </header>
+
+    <main>
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div class="flash-stack">
+                    {% for category, message in messages %}
+                        <div class="flash flash-{{ category }}">{{ message }}</div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- <footer>
+        <span>Anonymous by design.</span>
+        <span>© {{ current_year }} {{ site_name }}</span>
+    </footer> -->
+
+    {% block scripts %}{% endblock %}
+</body>
+</html>

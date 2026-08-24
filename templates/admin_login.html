@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block title %}Admin login · {{ site_name }}{% endblock %}
+
+{% block content %}
+<section class="center-page">
+    <div class="glass-card auth-card">
+        <div class="lock-badge">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M12 2a5 5 0 0 0-5 5v3H5.8A1.8 1.8 0 0 0 4 11.8v8.4A1.8 1.8 0 0 0 5.8 22h12.4a1.8 1.8 0 0 0 1.8-1.8v-8.4a1.8 1.8 0 0 0-1.8-1.8H17V7a5 5 0 0 0-5-5Zm-3 8V7a3 3 0 1 1 6 0v3H9Z"/>
+            </svg>
+        </div>
+
+        <div class="eyebrow">Restricted area</div>
+        <h1>Admin access</h1>
+        <p class="muted">Sign in to read and export anonymous messages.</p>
+
+        <form method="post" class="stack-form">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+            <label for="username">Username</label>
+            <input id="username" name="username" type="text" autocomplete="username" required>
+
+            <label for="password">Password</label>
+            <input id="password" name="password" type="password" autocomplete="current-password" required>
+
+            <button class="primary-button" type="submit">Sign in</button>
+        </form>
+    </div>
+</section>
+{% endblock %}

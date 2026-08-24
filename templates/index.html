@@ -1,0 +1,88 @@
+{% extends "base.html" %}
+{% block title %}Send anonymously · {{ site_name }}{% endblock %}
+
+{% block content %}
+<section class="hero-grid">
+    <div class="hero-copy">
+        <!-- <div class="eyebrow">Private feedback channel</div> -->
+        <h1>Send Your Feedback.<br><span>No identity required.</span></h1>
+        <p class="lead">
+            Send an anonymous message directly.
+            No account, name, or email is requested.
+        </p>
+
+        <!-- <div class="trust-row">
+            <div class="trust-card">
+                <div class="trust-icon">01</div>
+                <div>
+                    <strong>No profile</strong>
+                    <small>You are never asked to identify yourself.</small>
+                </div>
+            </div>
+            <div class="trust-card">
+                <div class="trust-icon">02</div>
+                <div>
+                    <strong>Admin only</strong>
+                    <small>Submitted messages are available only in the admin area.</small>
+                </div>
+            </div>
+        </div> -->
+    </div>
+
+    <div class="glass-card compose-card">
+        <div class="card-topline">
+            <div>
+                <div class="status-dot"></div>
+                <span>Anonymous message</span>
+            </div>
+            <span id="counter">0 / 5000</span>
+        </div>
+
+        <form method="post" action="{{ url_for('home') }}" id="messageForm">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+            <div class="honeypot" aria-hidden="true">
+                <label>Website</label>
+                <input type="text" name="website" tabindex="-1" autocomplete="off">
+            </div>
+
+            <label class="sr-only" for="message">Your anonymous message</label>
+            <textarea
+                id="message"
+                name="message"
+                maxlength="5000"
+                placeholder="Write your message here…"
+                required
+            >{{ message or "" }}</textarea>
+
+            <div class="privacy-note">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M12 2a5 5 0 0 0-5 5v3H5.8A1.8 1.8 0 0 0 4 11.8v8.4A1.8 1.8 0 0 0 5.8 22h12.4a1.8 1.8 0 0 0 1.8-1.8v-8.4a1.8 1.8 0 0 0-1.8-1.8H17V7a5 5 0 0 0-5-5Zm-3 8V7a3 3 0 1 1 6 0v3H9Z"/>
+                </svg>
+                <span>This app does not store a sender name, email, IP address, or user-agent.</span>
+            </div>
+
+            <button type="submit" class="primary-button">
+                <span>Send anonymously</span>
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="m5 12 14-7-4.4 14-3.1-5.5L5 12Zm6.9-.7 1.9 3.4 1.7-5.4-3.6 2Z"/>
+                </svg>
+            </button>
+        </form>
+    </div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    const textarea = document.getElementById("message");
+    const counter = document.getElementById("counter");
+
+    function updateCounter() {
+        counter.textContent = `${textarea.value.length} / 5000`;
+    }
+
+    textarea.addEventListener("input", updateCounter);
+    updateCounter();
+</script>
+{% endblock %}

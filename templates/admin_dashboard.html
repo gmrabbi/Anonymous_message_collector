@@ -1,0 +1,90 @@
+{% extends "base.html" %}
+{% block title %}Admin dashboard · {{ site_name }}{% endblock %}
+
+{% block content %}
+<section class="dashboard">
+    <div class="dashboard-heading">
+        <div>
+            <div class="eyebrow">Private inbox</div>
+            <h1>Anonymous messages</h1>
+            <p class="muted">
+                Only message content and its received time are stored by this application.
+            </p>
+        </div>
+
+        <a class="secondary-button" href="{{ url_for('export_messages') }}">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M11 3h2v10.2l3.6-3.6L18 11l-6 6-6-6 1.4-1.4 3.6 3.6V3ZM5 19h14v2H5v-2Z"/>
+            </svg>
+            Download Excel
+        </a>
+    </div>
+
+    <div class="stat-grid">
+        <div class="stat-card">
+            <span>Total messages</span>
+            <strong>{{ total_messages }}</strong>
+        </div>
+        <div class="stat-card">
+            <span>Current page</span>
+            <strong>{{ pagination.page }}</strong>
+        </div>
+        <div class="stat-card">
+            <span>Privacy mode</span>
+            <strong class="privacy-ok">Anonymous</strong>
+        </div>
+    </div>
+
+    {% if messages %}
+        <div class="message-list">
+            {% for item in messages %}
+                <article class="message-card">
+                    <div class="message-meta">
+                        <span class="message-number">#{{ item.id }}</span>
+                        <time>
+                            {{ item.created_at.strftime("%d %b %Y · %H:%M") }} UTC
+                        </time>
+                    </div>
+
+                    <div class="message-body">{{ item.body }}</div>
+
+                    <div class="message-actions">
+                        <form
+                            action="{{ url_for('delete_message', message_id=item.id) }}"
+                            method="post"
+                            onsubmit="return confirm('Delete this message permanently?');"
+                        >
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                            <button class="danger-button" type="submit">Delete</button>
+                        </form>
+                    </div>
+                </article>
+            {% endfor %}
+        </div>
+
+        {% if pagination.pages > 1 %}
+            <nav class="pagination" aria-label="Message pages">
+                {% if pagination.has_prev %}
+                    <a href="{{ url_for('admin_dashboard', page=pagination.prev_num) }}">← Previous</a>
+                {% else %}
+                    <span class="disabled">← Previous</span>
+                {% endif %}
+
+                <span>Page {{ pagination.page }} of {{ pagination.pages }}</span>
+
+                {% if pagination.has_next %}
+                    <a href="{{ url_for('admin_dashboard', page=pagination.next_num) }}">Next →</a>
+                {% else %}
+                    <span class="disabled">Next →</span>
+                {% endif %}
+            </nav>
+        {% endif %}
+    {% else %}
+        <div class="glass-card empty-state">
+            <div class="empty-icon">✦</div>
+            <h2>No messages yet</h2>
+            <p>New anonymous submissions will appear here.</p>
+        </div>
+    {% endif %}
+</section>
+{% endblock %}
